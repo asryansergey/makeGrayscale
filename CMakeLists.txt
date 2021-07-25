@@ -1,10 +1,13 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra")
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(greyscalePng)
+
+option(BUILD_TESTS "Build tests" OFF)
+
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 list(APPEND LODEPNG_INCLUDES ${PROJECT_SOURCE_DIR}/libs/lodepng)
@@ -21,3 +24,8 @@ target_include_directories(gspng PRIVATE ${GSPNG_INCLUDES})
 
 set_target_properties(gspng PROPERTIES ADDITIONAL_CLEAN_FILES 
     "${CMAKE_BINARY_DIR}/CMakeCache.txt")
+
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

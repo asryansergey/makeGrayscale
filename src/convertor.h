@@ -3,14 +3,16 @@
 #include <lodepng.h>
 
 #include <algorithm>
+#include <cassert>
 #include <cstdio>
+#include <filesystem>
 #include <string>
 #include <vector>
 
+#include "exception.h"
+
 using std::string;
 using std::vector;
-
-using namespace lodepng;
 
 class PngConvertor {
    public:
@@ -19,20 +21,21 @@ class PngConvertor {
         constexpr static float GREEN{0.7152};
         constexpr static float BLUE{0.0722};
     };
-    PngConvertor(const string& srcPath, const string& destPath) : srcPngPath(srcPath), destPngPath(destPath) {
-    }
-    ~PngConvertor(){};
-    unsigned loadRawSrcPng();
+
+    void loadRawSrcPng(const string& srcPath);
     void makeGrayscale();
-    void saveGrayscalePng();
+    void saveGrayscalePng(const string& destPngPath);
+    void convert(const string&, const string&);
+    bool maxImageSizeExceed(const string& path) const;
+
+    PngConvertor() = default;
+    ~PngConvertor() = default;
 
    private:
     vector<uint8_t> srcPng;
-    vector<uint8_t> destGrayscalePng;
-    string srcPngPath{};
-    string destPngPath{};
+    vector<uint8_t> rawGrayscalePng;
     unsigned width{};
     unsigned height{};
-
+    const unsigned long kMaxImageSize{6291456};  // 6MB in bytes
     uint8_t getGrayscalePixel(const unsigned x, const unsigned y) const;
 };
